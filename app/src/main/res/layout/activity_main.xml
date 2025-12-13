@@ -5,28 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:background="#101922"
+    tools:context=".view.MainActivity">
     <TextView
         android:id="@+id/nameCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center"
         android:text="HaNoi"
-        android:textSize="18sp"/>
-    <ImageView
-        android:id="@+id/imgWeather"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:contentDescription="weather Icon"/>
+        android:textSize="20sp"/>
+<!--    <ImageView-->
+<!--        android:id="@+id/imgWeather"-->
+<!--        android:layout_width="64dp"-->
+<!--        android:layout_height="64dp"-->
+<!--        android:contentDescription="weather Icon"/>-->
     <TextView
         android:id="@+id/temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="28 do"
-        android:textSize="18sp"/>
+        android:textColor="@color/white"
+        android:layout_gravity="center"
+        android:textSize="60sp"/>
     <TextView
         android:id="@+id/mainWeather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="sunny"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
         android:textSize="18sp"/>
 </LinearLayout>

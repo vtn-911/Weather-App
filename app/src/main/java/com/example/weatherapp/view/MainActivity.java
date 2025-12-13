@@ -1,10 +1,13 @@
-package com.example.weatherapp;
+package com.example.weatherapp.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.weatherapp.R;
+import com.example.weatherapp.viewmodel.WeatherViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -33,15 +39,25 @@ public class MainActivity extends AppCompatActivity {
     ImageView imgWeather;
     FusedLocationProviderClient fusedLocationProviderClient;
     ActivityResultLauncher<String> permissionLauncher;
+    WeatherViewModel weatherViewModel;
 
-    private String apiKey = "ecfad4ce34b0a4dba5fa9f98f5ab2694";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Window window = getWindow();
+        window.setStatusBarColor(Color.TRANSPARENT);
+        window.setNavigationBarColor(Color.TRANSPARENT);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         txtnameCity = findViewById(R.id.nameCity);
         txttemp = findViewById(R.id.temp);
+        txtmainWeather = findViewById(R.id.mainWeather);
+//        imgWeather = findViewById(R.id.imgWeather);
+
+        weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted){
@@ -59,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
         }else{
             permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }
-
-
     }
 
     private void getRealLocation() {
@@ -70,9 +84,7 @@ public class MainActivity extends AppCompatActivity {
         fusedLocationProviderClient.getLastLocation()
                 .addOnSuccessListener(location -> {
                     if (location != null){
-                        double lon = location.getLongitude();
-                        double lat = location.getLatitude();
-                        callWeatherAPI(lon,lat);
+                        observeWeather(location.getLongitude(),location.getLatitude());
                     }else {
                         resquestNewLocation();
                     }
@@ -91,27 +103,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 Location location = locationResult.getLastLocation();
-                // Gọi API tại đây nếu lấy location mới
-                callWeatherAPI(location.getLongitude(),location.getLatitude());
+
+                observeWeather(location.getLongitude(),location.getLatitude());
+
                 fusedLocationProviderClient.removeLocationUpdates(this);
             }
         }, Looper.getMainLooper());
     }
-    private void callWeatherAPI(double lon, double lat){
-        ApiClient.apiSV.getWeatherRespone(lon,lat,apiKey,"metric","vi")
-                .enqueue(new Callback<WeatherRespone>() {
-                    @Override
-                    public void onResponse(Call<WeatherRespone> call, Response<WeatherRespone> response) {
-                        WeatherRespone data = response.body();
-                        txtnameCity.setText(data.getName());
-                        int temp = (int) data.getMain().getTemp();
-                        txttemp.setText(String.valueOf(temp) + "°C");
-                    }
-
-                    @Override
-                    public void onFailure(Call<WeatherRespone> call, Throwable t) {
-
-                    }
-                });
+    private void observeWeather(double lon, double lat){
+        weatherViewModel.getWeather(lon,lat).observe(MainActivity.this,data ->{
+            if (data != null){
+                txtnameCity.setText(data.getName());
+                int temp = (int) data.getMain().getTemp();
+                txttemp.setText(String.valueOf(temp) + "°");
+                txtmainWeather.setText(data.getWeather().get(0).getMain());
+            }
+        });
     }
+
 }
