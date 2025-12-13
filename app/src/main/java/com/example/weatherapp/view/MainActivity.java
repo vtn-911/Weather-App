@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.weatherapp.R;
 import com.example.weatherapp.viewmodel.WeatherViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -59,18 +60,13 @@ public class MainActivity extends AppCompatActivity {
 
         weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-            if (isGranted){
-                getRealLocation();
-            }
-        });
 
     }
     @Override
     protected void onStart() {
         super.onStart();
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             getRealLocation();
         }else{
             permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -117,6 +113,10 @@ public class MainActivity extends AppCompatActivity {
                 int temp = (int) data.getMain().getTemp();
                 txttemp.setText(String.valueOf(temp) + "°");
                 txtmainWeather.setText(data.getWeather().get(0).getMain());
+                // Icon xấu quá tạm ẩn ( :v )
+//                Glide.with(MainActivity.this)
+//                        .load("https://openweathermap.org/img/wn/"+ data.getWeather().get(0).getIcon()+"@4x.png")
+//                        .into(imgWeather);
             }
         });
     }
