@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,9 +19,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.weatherapp.R;
+import com.example.weatherapp.adapter.ForecastAdapter;
+import com.example.weatherapp.module.ListForecast;
 import com.example.weatherapp.viewmodel.WeatherViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -31,6 +36,9 @@ import com.google.android.gms.location.Priority;
 
 import com.example.weatherapp.api.ApiClient;
 import com.example.weatherapp.module.WeatherRespone;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
     FusedLocationProviderClient fusedLocationProviderClient;
     ActivityResultLauncher<String> permissionLauncher;
     WeatherViewModel weatherViewModel;
-
+    RecyclerView rv ;
+    ForecastAdapter forecastAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
         txttemp = findViewById(R.id.temp);
         txtmainWeather = findViewById(R.id.mainWeather);
 //        imgWeather = findViewById(R.id.imgWeather);
+        rv = findViewById(R.id.rclForecast);
+        forecastAdapter = new ForecastAdapter();
+        rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rv.setAdapter(forecastAdapter);
 
         weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -74,13 +87,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getRealLocation() {
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             return;
         }
         fusedLocationProviderClient.getLastLocation()
                 .addOnSuccessListener(location -> {
                     if (location != null){
                         observeWeather(location.getLongitude(),location.getLatitude());
+                        observeForecast(location.getLongitude(), location.getLatitude());
                     }else {
                         resquestNewLocation();
                     }
@@ -107,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }, Looper.getMainLooper());
     }
     private void observeWeather(double lon, double lat){
-        weatherViewModel.getWeather(lon,lat).observe(MainActivity.this,data ->{
+        weatherViewModel.getWeatherLiveData().observe(MainActivity.this,data ->{
             if (data != null){
                 txtnameCity.setText(data.getName());
                 int temp = (int) data.getMain().getTemp();
@@ -119,6 +134,15 @@ public class MainActivity extends AppCompatActivity {
 //                        .into(imgWeather);
             }
         });
+        weatherViewModel.loadWeather(lon,lat);
+    }
+    private void  observeForecast(double lon, double lat){
+        weatherViewModel.getForecastLiveData().observe(MainActivity.this, data ->{
+            if (data != null){
+                forecastAdapter.setData(data.getList());
+            }
+        });
+        weatherViewModel.loadForecast(lon,lat);
     }
 
 }
