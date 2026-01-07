@@ -45,13 +45,40 @@
                 android:text="sunny"
                 android:textColor="@color/white"
                 android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
                 android:textSize="18sp"/>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rclForecast"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp"
                 android:layout_margin="10dp"
-                android:padding="10dp"/>
+                android:background="@drawable/bgrecycleview">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:background="@drawable/bghourly">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vector"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Dự báo hàng giờ"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#9DABB9"
+                        android:paddingLeft="8dp"/>
+                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rclForecast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

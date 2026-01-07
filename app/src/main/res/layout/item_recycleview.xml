@@ -5,27 +5,27 @@
     android:orientation="vertical"
     android:layout_margin="10dp"
     android:padding="10dp">
-    <TextView
-        android:id="@+id/txtHourlyForecast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:text="11 gio"
-        android:layout_gravity="center"
-        android:textSize="12sp"/>
-    <ImageView
-        android:id="@+id/imgForecast"
-        android:layout_width="24dp"
-        android:layout_height="28dp"
-        android:layout_gravity="center"
-        android:contentDescription="Forecast Icon"/>
-    <TextView
-        android:id="@+id/tempForecast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="28 do"
-        android:layout_gravity="center"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/txtHourlyForecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="11 gio"
+            android:layout_gravity="center"
+            android:textSize="12sp"/>
+        <ImageView
+            android:id="@+id/imgForecast"
+            android:layout_width="24dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:contentDescription="Forecast Icon"/>
+        <TextView
+            android:id="@+id/tempForecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="28 do"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 </LinearLayout>
