@@ -44,7 +44,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    TextView txtnameCity, txttemp, txtmainWeather;
+    TextView txtnameCity, txttemp, txtmainWeather, txtHumidity, txtPressure, txtVisibility, txtWind,txtDegWind;
     ImageView imgWeather;
     FusedLocationProviderClient fusedLocationProviderClient;
     ActivityResultLauncher<String> permissionLauncher;
@@ -70,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
         forecastAdapter = new ForecastAdapter();
         rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rv.setAdapter(forecastAdapter);
+
+        txtHumidity = findViewById(R.id.txt_humidity);
+        txtWind = findViewById(R.id.txt_wind);
+        txtVisibility = findViewById(R.id.txt_visibility);
+        txtPressure = findViewById(R.id.txt_pressure);
+        txtDegWind = findViewById(R.id.txt_deg_wind);
 
         weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -132,6 +138,13 @@ public class MainActivity extends AppCompatActivity {
 //                Glide.with(MainActivity.this)
 //                        .load("https://openweathermap.org/img/wn/"+ data.getWeather().get(0).getIcon()+"@4x.png")
 //                        .into(imgWeather);
+                txtHumidity.setText(String.valueOf(data.getMain().getHumidity())+"%");
+                txtPressure.setText(String.valueOf(data.getMain().getPressure()));
+                float speedwind = data.getWind().getSpeed();
+                txtWind.setText(String.valueOf(speedwind));
+                txtDegWind.setText(String.valueOf(data.getWind().getDeg()));
+                int visibility = data.getVisibility();
+                txtVisibility.setText(String.valueOf(visibility));
             }
         });
         weatherViewModel.loadWeather(lon,lat);

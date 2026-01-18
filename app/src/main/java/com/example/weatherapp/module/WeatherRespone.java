@@ -6,6 +6,24 @@ public class WeatherRespone {
     private String name;
     private Main main;
     private List<Weather> weather;
+    private int visibility;
+    private Wind wind;
+
+    public int getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(int visibility) {
+        this.visibility = visibility;
+    }
+
+    public Wind getWind() {
+        return wind;
+    }
+
+    public void setWind(Wind wind) {
+        this.wind = wind;
+    }
 
     public String getName() {
         return name;
